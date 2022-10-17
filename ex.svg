@@ -1,0 +1,42 @@
+<svg width="440" height="440" viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<g filter="url(#filter0)">
+<path d="M20 36C20 27.1635 27.1634 20 36 20H404C412.837 20 420 27.1634 420 36V404C420 412.837 412.837 420 404 420H36C27.1635 420 20 412.837 20 404V36Z" fill="#CC88CC"/>
+</g>
+<g filter="url(#filter1)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M80 80L360 360L359.293 360.707L79.2929 80.7071L80 80Z" fill="#88CC88" stroke="#88CC88" stroke-width="60" stroke-linejoin="round"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M80 360L360 80L360.707 80.7071L80.7071 360.707L80 360Z" fill="#88CC88" stroke="#88CC88" stroke-width="60" stroke-linejoin="round"/>
+</g>
+</g>
+<defs>
+<filter id="filter0" x="8" y="12" width="424" height="424" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="bif"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="6"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.8 0 0 0 0 0.533333 0 0 0 0 0.8 0 0 0 0.8 0"/>
+<feBlend mode="normal" in2="bif" result="ef1ds"/>
+<feBlend mode="normal" in="SourceGraphic" in2="ef1ds" result="shape"/>
+</filter>
+<filter id="filter1" x="-30.7071" y="-26" width="501.414" height="500.707" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="bif"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.3 0"/>
+<feBlend mode="normal" in2="bif" result="ef1ds"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="40"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0"/>
+<feBlend mode="normal" in2="ef1ds" result="ef2ds"/>
+<feBlend mode="normal" in="SourceGraphic" in2="ef2ds" result="shape"/>
+</filter>
+<clipPath id="clip0">
+<rect width="440" height="440" fill="white"/>
+</clipPath>
+</defs>
+</svg>

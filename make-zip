@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$0")"
+name="$(basename "$PWD")"
+
+for size in 16 32 48 128; do
+  convert -background none -geometry "${size}x$size" "ex.svg" "ex$size.png"
+done
+
+rm -f "../$name.zip"
+# git archive --output="../$name.zip" --prefix="$name/" main \
+#     :!.gitignore :!make-zip
+
+shopt -qs globstar
+cd ..
+files=("$name"/{*.{js,html,md,json},ex*.{svg,png}})
+IFS=$'\n' files=($(printf "%s\n" "${files[@]}" | sort))
+zip -r9 "$name.zip" "${files[@]}"
