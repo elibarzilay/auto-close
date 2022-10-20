@@ -2,18 +2,22 @@ const DEFAULT_WAIT = "10s";
 const DEFAULT_SITES = [{
   url: "https://{*.|}zoom.us/",
   title: "Launch Meeting * Zoom",
-  contents: "Your meeting has been launched",
+  contents: "{Your meeting has been launched|click Launch Meeting below}",
   wait: "30s",
 }];
 
 let sites = [];
 chrome.storage.sync.get("sites", ({ sites: s }) => {
-  if (Array.isArray(s)) return;
+  if (Array.isArray(s) && s.length > 0) return sites = s;
   chrome.storage.sync.set({ sites: DEFAULT_SITES });
+  sites = DEFAULT_SITES;
 });
-chrome.storage.onChanged.addListener((changes, area) =>
-  area === "sync" && changes.sites?.newValue
-  && (sites = changes.sites?.newValue));
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== "sync") return;
+  const newValue = changes.sites?.newValue;
+  if (!(Array.isArray(newValue) && newValue.length > 0)) return;
+  sites = changes.sites?.newValue;
+});
 
 const globModes = {
   pathStart: { pfx: "^",   sfx: "",    flags: "s",  dStar: true,  spaces: false},
@@ -70,7 +74,7 @@ const shouldClose = async tab => {
 };
 
 const closeTab = (tab, wait) => {
-  console.log(`Countdown to closing "${tab.title}" (${tab.url})...`);
+  console.log(`${wait} countdown to closing "${tab.title}" (${tab.url})...`);
   chrome.scripting.executeScript({ target: { tabId: tab.id },
                                    func: kiiillMeee, args: [wait] });
 };

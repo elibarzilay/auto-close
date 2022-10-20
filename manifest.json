@@ -2,7 +2,7 @@
   "name": "Auto Close",
   "description": "Automatically close tabs left by things like zoom meeting links and similar.",
   "manifest_version": 3,
-  "version": "0.1",
+  "version": "0.2",
   "icons": { "16": "ex16.png", "32": "ex32.png", "48": "ex48.png", "128": "ex128.png" },
   "action": {},
   "permissions": ["scripting", "tabs", "storage"],
