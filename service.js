@@ -73,21 +73,39 @@ const shouldClose = async tab => {
       return site;
 };
 
-const closeTab = (tab, wait) => {
+const closingTabIds = new Set();
+const startClosing = (tab, wait) => {
+  closingTabIds.add(tab.id);
   console.log(`${wait} countdown to closing "${tab.title}" (${tab.url})...`);
+};
+const actualClose = tab => {
+  if (!closingTabIds.has(tab.id)) return;
+  closingTabIds.delete(tab.id);
+  chrome.tabs.remove(tab.id)
+    .then(_ => console.log(`Closed "${tab.title}".`, tab))
+    .catch(_ => console.log(`Couldn't "${tab.title}", probably closed manually.`, tab));
+};
+const cancelClose = tab => {
+  if (!closingTabIds.has(tab.id)) return;
+  closingTabIds.delete(tab.id);
+  console.log(`Canceled closing "${tab.title}".`, tab);
+};
+
+const closeTab = (tab, wait) => {
+  startClosing(tab, wait);
   chrome.scripting.executeScript({ target: { tabId: tab.id },
                                    func: kiiillMeee, args: [wait] });
   const [time, unit] = wait.toLowerCase().match(/^ *(\d+) *(m?s)?/).slice(1);
   const ms = +time * (unit === "s" ? 1000 : 1);
-  setTimeout(() => chrome.tabs.remove(tab.id), ms + 500);
+  setTimeout(() => actualClose(tab), ms + 500);
 };
-chrome.runtime.onMessage.addListener((msg, { tab }, send) => {
-  if (msg === "settings") return chrome.runtime.openOptionsPage();
-  if (msg === "defaults") return send(DEFAULT_SITES);
-  if (msg !== "kiiill meee") return;
-  console.log(`Closing "${tab.title}" (${tab.url})...`);
-  chrome.tabs.remove(tab.id);
-});
+
+chrome.runtime.onMessage.addListener((msg, { tab }, send) =>
+    msg === "settings" ? chrome.runtime.openOptionsPage()
+  : msg === "defaults" ? send(DEFAULT_SITES)
+  : msg === "kill.me." ? actualClose(tab)
+  : msg === "no.kill." ? cancelClose(tab)
+  : undefined);
 
 const kiiillMeee = wait => {
   const div = (style, ...children) => {
@@ -108,10 +126,10 @@ const kiiillMeee = wait => {
       backdropFilter: "grayscale(1) blur(3px)",
       color: "#fe4", fontSize: "24px", fontWeight: "bolder", textAlign: "center",
     }, div({ ...barStyle, backgroundColor: "#422", }),
-       window.x = settings = div({
+       settings = div({
          position: "fixed", right: 0, top: 0, cursor: "pointer",
          backgroundColor: "#8888", color: "#fe4", borderRadius: "3px",
-         margin: "6px 12px", padding: "6px 12px",
+         margin: "6px 12px", padding: "6px 12px", opacity: 0.75,
          fontSize: "24px", fontWeight: "bolder",
        }, "Auto Close Settings"),
        progress = div({ ...barStyle,
@@ -122,16 +140,18 @@ const kiiillMeee = wait => {
        }, "🙅 Closing")));
   setTimeout(() => progress.style.width = "0%", 100);
   progress.addEventListener("transitionend", () =>
-    chrome.runtime.sendMessage("kiiill meee"));
-  const close = () => {
+    chrome.runtime.sendMessage("kill.me."));
+  const stopClosing = () => {
+    chrome.runtime.sendMessage("no.kill.");
     top.remove();
     document.body.parentElement.append(settings);
     settings.style.zIndex = 999999;
   };
-  top.addEventListener("click", close);
-  settings.addEventListener("click", () =>
-    chrome.runtime.sendMessage("settings"));
-  window.addEventListener("keydown", ({ key }) => key === "Escape" && close());
+  top.addEventListener("click", stopClosing);
+  settings.addEventListener("click", () => chrome.runtime.sendMessage("settings"));
+  settings.addEventListener("mouseenter", () => settings.style.opacity = 1);
+  settings.addEventListener("mouseleave", () => settings.style.opacity = 0.75);
+  window.addEventListener("keydown", ({ key }) => key === "Escape" && stopClosing());
 };
 
 chrome.tabs.onUpdated.addListener(async (_, change, tab) => {
