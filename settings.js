@@ -6,9 +6,9 @@ const FIELDS = [
   { name: "contents",
     desc: "Page contents to look for (word-matches, can use '*')" },
   { name: "wait",
-    desc: "delay",
+    desc: "delay (s/ms)",
     validate: w => w.trim().toLowerCase().replace(
-      /^(\d+)? *([a-z])?.*/, (_, n, u) =>
+      /^(\d+)? *(m?s)?.*/, (_, n, u) =>
       n || u ? (n || 1) + (u || "s") : "") },
 ];
 

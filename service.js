@@ -61,7 +61,7 @@ const compileSites = sites => {
 
 const contentHas = async (tab, rx) => (await chrome.scripting.executeScript({
   target: { tabId: tab.id },
-  func: (rx, fs) => (console.log(new RegExp(rx, fs)), (new RegExp(rx, fs)).test(document.body.innerText)),
+  func: (rx, fs) => (new RegExp(rx, fs)).test(document.body.innerText),
   args: [rx.source, rx.flags],
 }))?.[0]?.result;
 
@@ -77,6 +77,9 @@ const closeTab = (tab, wait) => {
   console.log(`${wait} countdown to closing "${tab.title}" (${tab.url})...`);
   chrome.scripting.executeScript({ target: { tabId: tab.id },
                                    func: kiiillMeee, args: [wait] });
+  const [time, unit] = wait.toLowerCase().match(/^ *(\d+) *(m?s)?/).slice(1);
+  const ms = +time * (unit === "s" ? 1000 : 1);
+  setTimeout(() => chrome.tabs.remove(tab.id), ms + 500);
 };
 chrome.runtime.onMessage.addListener((msg, { tab }, send) => {
   if (msg === "settings") return chrome.runtime.openOptionsPage();
