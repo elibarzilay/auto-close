@@ -83,7 +83,7 @@ const actualClose = tab => {
   closingTabIds.delete(tab.id);
   chrome.tabs.remove(tab.id)
     .then(_ => console.log(`Closed "${tab.title}".`, tab))
-    .catch(_ => console.log(`Couldn't "${tab.title}", probably closed manually.`, tab));
+    .catch(e => console.log(`Couldn't close "${tab.title}", probably closed manually.\n(e?.message ?? e)`, tab));
 };
 const cancelClose = tab => {
   if (!closingTabIds.has(tab.id)) return;
